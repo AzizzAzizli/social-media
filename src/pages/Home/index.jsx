@@ -1,7 +1,9 @@
-import React from 'react'
+import Header from '../../components/Static/Header/index'
 
 export const index = () => {
   return (
-    <div>index</div>
+    <>
+      <Header />
+    </>
   )
 }

@@ -1,5 +1,6 @@
 export const Routes={
-    home:"/",
-    explore:"/explore",
-    profile:"/profile/:id"
+    home: "/",
+    inbox: "/inbox",
+    explore: "/explore",
+    profile:  "/profile/:id"
 }

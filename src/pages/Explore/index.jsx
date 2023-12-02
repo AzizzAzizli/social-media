@@ -1,7 +1,7 @@
-import React from 'react'
-
-export const index = () => {
+const Explore = () => {
   return (
-    <div>inEdex</div>
+    <div>Explore</div>
   )
 }
+
+export default Explore

@@ -1,7 +1,6 @@
-import React from 'react'
-
-export const index = () => {
+const Inbox = () => {
   return (
     <div>index</div>
   )
 }
+export default Inbox

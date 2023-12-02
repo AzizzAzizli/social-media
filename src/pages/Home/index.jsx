@@ -1,9 +1,8 @@
-import Header from '../../components/Static/Header/index'
-
-export const index = () => {
+const Home = () => {
   return (
-    <>
-      <Header />
-    </>
+    <div>
+          
+    </div>
   )
 }
+export default Home

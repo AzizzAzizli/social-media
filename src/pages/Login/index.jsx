@@ -16,7 +16,8 @@ const Login = () => {
       [name]: value,
     }));
   };
-
+  let arr = Object.values(formData)
+  let isDisabled = arr.every(item => item !== "")
   const callFormData = () => {
     console.log(formData);
   }
@@ -50,7 +51,7 @@ const Login = () => {
             </InputComponentsBody>
 
             <Button 
-                disabled={formData.email === "" || formData.fullname === "" || formData.username === "" || formData.password === ""}
+                disabled={ !isDisabled }
                 title={"Log in"} 
                 callFormData={callFormData}
             />

@@ -3,26 +3,69 @@ import Input from '../../components/Static/Input/index'
 import Logo from '../../components/Icons/Logo/index'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { useState } from 'react'
+import {db} from "../../helper/firebase/index"
+import {  useEffect, useState } from 'react'
+import { RegexEmail } from '../../hooks/RegexEmail'
+import { push, ref } from 'firebase/database'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+const initialvalue={ email: '', fullname: '', username: '', password: '' }
+
+const users=ref(db,"Users")
+const userNames=ref(db,"UserNames")
 const SignUp = () => {
-  const [formData, setFormData] = useState({ email: '', fullname: '', username: '', password: '' });
+  const [boolean,setBoolean] = useState (false)
+  const [formData, setFormData] = useState(initialvalue);
   const navigate = useNavigate()
 
   const handleInputChange = (name, value) => {
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+
+   
   };
 
+ useEffect(()=>{
   let arr = Object.values(formData)
   let isDisabled = arr.every(item => item !== "")
-  const callFormData = () => {
+  setBoolean(isDisabled)
+ },[formData])
 
+
+
+  
+  const callFormData = () => {
+    console.log(formData.email);
+    
+    let isEmail= RegexEmail(formData?.email)
+
+    console.log(isEmail);
+// setFormData(initialvalue)
+if(isEmail){
+  push(users,formData)
+  push(userNames,formData.username)
+toast.success("Success")
+}else{
+toast.error("Invalid input")
+setBoolean(false)
+return
+}
   }
+
+
+// console.log(db);
+
+
+
   return (
     <Container>
+      <div>
+        <ToastContainer />
+      </div>
         <Form>
           <Logo />
 
@@ -65,7 +108,7 @@ const SignUp = () => {
           </InputComponentsBody>
 
           <Button 
-              disabled={ !isDisabled }
+              disabled={ !boolean }
               title={"Sign Up"} 
               callFormData={callFormData}
           />

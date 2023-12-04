@@ -8,7 +8,9 @@ import { useEffect, useState } from 'react'
 import { RegexEmail } from '../../hooks/RegexEmail'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { login } from '../../services/index'
+import { getDatas, login } from '../../services/index'
+import { useLogin } from '../../hooks/useLogin'
+// import useLogin from '../../hooks/useLogin'
 
 const Login = () => {
   const [boolean,setBoolean] = useState(false)
@@ -27,21 +29,29 @@ const Login = () => {
     let isDisabled = arr.every(item => item !== "")
     setBoolean(isDisabled)
   },[formData])
+const [usrs,setUsrs]=useState([])
+  
+
+
+
   
   const handleData = () => {
     const isEmail= RegexEmail(formData.email)
     
     if(isEmail){
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        const result = login(formData)
-        console.log(formData,result)
+        // const result = login(formData)
+        // console.log(formData,result)
 
-        // if(result){
+        // if(useLogin(formData)){
         //   setTimeout(() => {
         //     navigate("/")
         //   }, 1500);
         //   toast.success("Success")
         // }
+     login(formData)
+
+
     }else{
         toast.error("Invalid input")
         setBoolean(false)

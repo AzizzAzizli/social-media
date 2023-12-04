@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { RegexEmail } from '../../hooks/RegexEmail'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { useLogin } from '../../hooks/useLogin'
+import { login } from '../../services/index'
 
 const Login = () => {
   const [boolean,setBoolean] = useState(false)
@@ -28,13 +28,12 @@ const Login = () => {
     setBoolean(isDisabled)
   },[formData])
   
-  
   const handleData = () => {
     const isEmail= RegexEmail(formData.email)
     
     if(isEmail){
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        const result = useLogin(formData)
+        const result = login(formData)
         console.log(formData,result)
 
         // if(result){
@@ -48,6 +47,7 @@ const Login = () => {
         setBoolean(false)
     }
   }
+
   return (
     <Container>
         <ToastContainer />

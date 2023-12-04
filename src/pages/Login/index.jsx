@@ -4,9 +4,14 @@ import Input from '../../components/Static/Input/index'
 import Logo from '../../components/Icons/Logo/index'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { RegexEmail } from '../../hooks/RegexEmail'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import { login } from '../../services/index'
 
 const Login = () => {
+  const [boolean,setBoolean] = useState(false)
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate()
 
@@ -16,13 +21,37 @@ const Login = () => {
       [name]: value,
     }));
   };
-  let arr = Object.values(formData)
-  let isDisabled = arr.every(item => item !== "")
-  const callFormData = () => {
-    console.log(formData);
+
+  useEffect(()=>{
+    let arr = Object.values(formData)
+    let isDisabled = arr.every(item => item !== "")
+    setBoolean(isDisabled)
+  },[formData])
+  
+  const handleData = () => {
+    const isEmail= RegexEmail(formData.email)
+    
+    if(isEmail){
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const result = login(formData)
+        console.log(formData,result)
+
+        // if(result){
+        //   setTimeout(() => {
+        //     navigate("/")
+        //   }, 1500);
+        //   toast.success("Success")
+        // }
+    }else{
+        toast.error("Invalid input")
+        setBoolean(false)
+    }
   }
+
   return (
     <Container>
+        <ToastContainer />
+
         <Left>
           <Image src={PhoneImage} alt="" />
         </Left>
@@ -51,9 +80,9 @@ const Login = () => {
             </InputComponentsBody>
 
             <Button 
-                disabled={ !isDisabled }
+                disabled={ !boolean }
                 title={"Log in"} 
-                callFormData={callFormData}
+                handleData={handleData}
             />
           </Form>
 

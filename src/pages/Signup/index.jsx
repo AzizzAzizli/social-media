@@ -1,127 +1,111 @@
 import Button from '../../components/Static/Button/index'
 import Input from '../../components/Static/Input/index'
-import Logo from '../../components/Icons/Logo/index'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import {db} from "../../helper/firebase/index"
-import {  useEffect, useState } from 'react'
-import { RegexEmail } from '../../hooks/RegexEmail'
-import { push, ref } from 'firebase/database'
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
+import Logo from '../../components/Icons/Logo/index'
+import { RegexEmail } from '../../hooks/RegexEmail'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { register } from '../../services/index'
 
-const initialvalue={ email: '', fullname: '', username: '', password: '' }
+const initialvalue = { email: '', fullname: '', username: '', password: '' }
 
-const users=ref(db,"Users")
-const userNames=ref(db,"UserNames")
 const SignUp = () => {
-  const [boolean,setBoolean] = useState (false)
-  const [formData, setFormData] = useState(initialvalue);
-  const navigate = useNavigate()
+    const [boolean,setBoolean] = useState(false)
+    const [formData, setFormData] = useState(initialvalue);
+    const navigate = useNavigate()
 
-  const handleInputChange = (name, value) => {
+    const handleInputChange = (name, value) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    };
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-   
-  };
-
- useEffect(()=>{
-  let arr = Object.values(formData)
-  let isDisabled = arr.every(item => item !== "")
-  setBoolean(isDisabled)
- },[formData])
-
-
-
-  
-  const callFormData = () => {
-    console.log(formData.email);
+    useEffect(()=>{
+      let arr = Object.values(formData)
+      let isDisabled = arr.every(item => item !== "")
+      setBoolean(isDisabled)
+    },[formData])
     
-    let isEmail= RegexEmail(formData?.email)
+    const handleData = () => {
+      const isEmail= RegexEmail(formData.email)
+      
+      if(isEmail){
+          const result = register(formData)
+          if(result){
+            setTimeout(() => {
+              navigate("/login")
+            }, 1500);
+            toast.success("Success")
+          }
+      }else{
+          toast.error("Invalid input")
+          setBoolean(false)
+      }
+    }
 
-    console.log(isEmail);
-// setFormData(initialvalue)
-if(isEmail){
-  push(users,formData)
-  push(userNames,formData.username)
-toast.success("Success")
-}else{
-toast.error("Invalid input")
-setBoolean(false)
-return
-}
-  }
+    return (
+      <Container>
+          <ToastContainer />
 
+          <Form>
+            <Logo />
 
-// console.log(db);
+            <AlertTitle>
+              Sign up to see photos and videos of your friends.
+            </AlertTitle>
 
+            <InputComponentsBody>
+                <Input
+                    type={"text"} 
+                    name={"email"} 
+                    placeholder={"Email"} 
+                    value={formData.email} 
+                    onInputChange={handleInputChange} 
+                />
 
+                <Input
+                    type={"text"} 
+                    name={"fullname"} 
+                    placeholder={"Full name"} 
+                    value={formData.fullname} 
+                    onInputChange={handleInputChange} 
+                />
 
-  return (
-    <Container>
-      <div>
-        <ToastContainer />
-      </div>
-        <Form>
-          <Logo />
+                <Input
+                    type={"text"} 
+                    name={"username"} 
+                    placeholder={"User Name"} 
+                    value={formData.username} 
+                    onInputChange={handleInputChange} 
+                />
 
-          <AlertTitle>
-            Sign up to see photos and videos of your friends.
-          </AlertTitle>
+                <Input
+                    type={"password"} 
+                    name={"password"} 
+                    placeholder={"Password"} 
+                    value={formData.password} 
+                    onInputChange={handleInputChange} 
+                />
+            </InputComponentsBody>
 
-          <InputComponentsBody>
-              <Input
-                  type={"text"} 
-                  name={"email"} 
-                  placeholder={"Email"} 
-                  value={formData.email} 
-                  onInputChange={handleInputChange} 
-              />
+            <Button 
+                disabled={ !boolean }
+                title={"Sign Up"} 
+                handleData={handleData}
+            />
+          </Form>
 
-              <Input
-                  type={"text"} 
-                  name={"fullname"} 
-                  placeholder={"Full name"} 
-                  value={formData.fullname} 
-                  onInputChange={handleInputChange} 
-              />
-
-              <Input
-                  type={"text"} 
-                  name={"username"} 
-                  placeholder={"User Name"} 
-                  value={formData.username} 
-                  onInputChange={handleInputChange} 
-              />
-
-              <Input
-                  type={"password"} 
-                  name={"password"} 
-                  placeholder={"Password"} 
-                  value={formData.password} 
-                  onInputChange={handleInputChange} 
-              />
-          </InputComponentsBody>
-
-          <Button 
-              disabled={ !boolean }
-              title={"Sign Up"} 
-              callFormData={callFormData}
-          />
-        </Form>
-
-        <AlertBox>
-          You don’t have an account?
-            <Span onClick={() => navigate("/login")}>
-              Join
-            </Span>
-        </AlertBox>
-    </Container>
-  )
+          <AlertBox>
+            You don’t have an account?
+              <Span onClick={() => navigate("/login")}>
+                Join
+              </Span>
+          </AlertBox>
+      </Container>
+    )
 }
 
 export default SignUp
@@ -194,3 +178,4 @@ const AlertTitle = styled.p`
     line-height: normal;
     margin: 12px 0px 18px 0px;
 `
+

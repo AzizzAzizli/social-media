@@ -1,10 +1,10 @@
 import styled from "styled-components"
 
 // eslint-disable-next-line react/prop-types
-const ButtonComponent = ({ title, disabled , callFormData }) => {
+const ButtonComponent = ({ title, disabled , handleData }) => {
 
   let handleButton = () => {
-    callFormData()
+    handleData()
   }
 
   return (
